@@ -24,8 +24,28 @@ async function run() {
       .db("BistroRestaurantCollection")
       .collection("FromMenu");
 
+    const cartCollection = client
+      .db("BistroRestaurantCollection")
+      .collection("carts");
+
     app.get("/FromMenu", async (req, res) => {
       const result = await RestaurantCollection.find().toArray();
+      res.send(result);
+    });
+
+    // carts collection!
+    // get cart
+    app.get("/foodcarts", async (req, res) => {
+      const email = req.query.email;
+      const query = { user: email };
+      const result = await cartCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    // add to cart food!
+    app.post("/foodcarts", async (req, res) => {
+      const cart = req.body;
+      const result = await cartCollection.insertOne(cart);
       res.send(result);
     });
 
